@@ -12,7 +12,7 @@ try:
 
         client_socket.sendall(message.encode("utf-8"))
 
-        data = client_socket.recv(1024)  # Receive up to 1024 bytes
+        data = client_socket.recv(1024)
         print("Client received:", data.decode("utf-8"))
 
 finally:
