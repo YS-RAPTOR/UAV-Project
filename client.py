@@ -16,12 +16,12 @@ while True:
         break
 
     # Show the frame
-    cv2.imshow("Camera Recording", frame)
+    cv2.imshow("Client Feed", frame)
 
     # Base64 encode the frame
     _, buffer = cv2.imencode(".jpg", frame)
-    base64_bytes = buffer.tobytes()
-    client_socket.sendto(base64_bytes, server_address)
+    image_bytes = buffer.tobytes()
+    client_socket.sendto(image_bytes, server_address)
 
     # Manage quit
     key = cv2.waitKey(1)

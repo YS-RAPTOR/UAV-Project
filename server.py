@@ -1,36 +1,22 @@
 import socket
 import cv2
-import threading
+import numpy as np
 
-def receive_messages(sock):
-    while True:
-        data, client_address = sock.recvfrom(4096)
-        print(f"\nReceived message from {client_address}: {data.decode()}")
+server_address = ("localhost", 1234)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind(server_address)
 
-def main():
-    # Define the server address and port
-    server_address = ('10.1.27.171', 65000)
+print(f"UDP server is listening on {server_address[0]}:{server_address[1]}")
 
-    # Create a UDP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+while True:
+    data, client_address = sock.recvfrom(100000)
+    image_array = np.frombuffer(data, np.uint8)
+    img = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+    cv2.imshow("Server Feed", img)
 
-    # Bind the socket to the server address
-    sock.bind(server_address)
+    # Manage quit
+    key = cv2.waitKey(1)
+    if key == 27:
+        break
 
-    print(f"UDP server is listening on {server_address[0]}:{server_address[1]}")
-
-    # Start a thread to receive messages
-    receive_thread = threading.Thread(target=receive_messages, args=(sock,))
-    receive_thread.start()
-
-    try:
-        while True:
-            # Allow the user to type input to send messages
-            message = input("Type a message to send to UDP client: ")
-            sock.sendto(message.encode(), ('10.1.27.171', 65000))  # Replace 'localhost' with the client address if needed
-    except KeyboardInterrupt:
-        print("\nClosing server...")
-        sock.close()
-
-if __name__ == "__main__":
-    main()
+cv2.destroyAllWindows()
