@@ -2,7 +2,8 @@ import socket
 import cv2
 import numpy as np
 
-server_address = ("localhost", 1234)
+server_address = ("192.168.137.1", 1234)
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(server_address)
 
